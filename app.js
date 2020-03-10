@@ -1,5 +1,6 @@
 var mysql      = require('mysql');
 const cTable = require('console.table');
+var inquirer = require('inquirer');
 
 
 var connection = mysql.createConnection({
@@ -40,11 +41,63 @@ connection.connect();
 //   showEmployees();
 // });
 
-showDepartments();
-showEmployees();
-showRoles();
+// showDepartments();
+// showEmployees();
+// showRoles();
  
 // connection.end();
+
+inquirer.prompt([
+    {
+    type: "list",
+    name: "main",
+    message: "Please choose from the selection",
+    choices: ['View all Employees', 'View all Departments', 
+        'View all Roles', 'Add Employee', 'Add Department', 
+        'Get Employee (by id)', 'Update Employee']
+    }
+  ])
+    .then(answers => {
+      switch (answers.main) {
+
+        case "View all Employees":
+        showEmployees()
+        break;
+
+        case 'View all Departments':
+        showDepartments()
+        break;
+
+        case 'View all Roles':
+        showRoles()
+        break;
+
+        case 'Add Employee':
+        addNewEmployee()
+        break;
+
+        case 'Add Department':
+        addNewDepartment()
+        break;
+
+        case 'Get Employee (by id)':
+        getEmployeeById()
+        break;
+
+        case 'Update Employee':
+        updateEmployee()
+        break;
+      }
+  })
+    .catch(error => {
+      if(error.isTtyError) {
+      // Prompt couldn't be rendered in the current environment
+    } else {
+      // Something else when wrong
+    }
+  });
+
+  ///////////////////////////////////////////////////////////////////
 
 function showEmployees() {
   const query = `
@@ -57,6 +110,7 @@ function showEmployees() {
   connection.query(query, function (error, results, fields) {
     if (error) throw error;
     console.table(results);
+
   });
 }
 
@@ -96,7 +150,7 @@ function addNewDepartment(departmentName) {
 function getEmployeeById(id) {
   return new Promise((resolve, reject) => {
     const query = `
-      select * from employee where id = ${id}
+      select * from employee where id = '${id}'
     `;
     connection.query(query, function (error, results, fields) {
       if (error) throw error;
@@ -122,3 +176,6 @@ function addNewEmployee(employee) {
     if (error) throw error;
   });  
 }
+
+
+
