@@ -210,7 +210,7 @@ function updateEmployeeInquery() {
       {
         type: 'input',
         name: 'name',
-        message: 'Enter deparment name'
+        message: 'Enter department name'
       },
     ]).then(answers => {
       addNewDepartment(answers);
